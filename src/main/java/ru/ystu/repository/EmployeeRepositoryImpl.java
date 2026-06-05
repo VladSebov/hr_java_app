@@ -48,7 +48,38 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Can not create user", e);
+            throw new RuntimeException("Can not create employee", e);
+        }
+    }
+
+    @Override
+    public void update(Long id, Employee employee) {
+        String sql = "UPDATE employees SET first_name = ?, last_name = ?, position = ?, department = ? WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, employee.getFirstName());
+            stmt.setString(2, employee.getLastName());
+            stmt.setString(3, employee.getPosition());
+            stmt.setString(4, employee.getDepartment());
+            stmt.setLong(5, id);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Can not update employee", e);
+        }
+    }
+
+    @Override
+    public void delete(Long id) {
+        String sql = "DELETE FROM employees WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Can not Delete employee", e);
         }
     }
 }
