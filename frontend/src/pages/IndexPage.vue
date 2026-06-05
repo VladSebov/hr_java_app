@@ -7,3 +7,17 @@
     />
   </q-page>
 </template>
+
+<script setup>
+import { onMounted } from 'vue'
+import { api } from 'boot/axios'
+import { useQuasar } from 'quasar'
+
+const $q = useQuasar()
+
+onMounted(() => {
+  api.get('/employees/').catch(err => {
+    if (err.response?.status !== 401) $q.notify({ color: 'negative', message: 'Бэкенд недоступен!' })
+  })
+})
+</script>
