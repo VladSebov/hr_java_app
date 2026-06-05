@@ -33,5 +33,17 @@ export default defineRouter((/* { store, ssrContext } */) => {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   })
 
+  Router.beforeEach((to) => {
+    const isAuthenticated = !!localStorage.getItem('jwt_token')
+
+    if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
+      return '/login'
+    }
+
+    if (to.path === '/login' && isAuthenticated) {
+      return '/employees'
+    }
+  })
+
   return Router
 })

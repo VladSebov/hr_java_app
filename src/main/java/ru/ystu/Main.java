@@ -8,6 +8,8 @@ import ru.ystu.controller.AuthServlet;
 import ru.ystu.controller.EmployeeServlet;
 import ru.ystu.controller.UserServlet;
 import ru.ystu.filter.AdminFilter;
+import ru.ystu.filter.CorsFilter;
+import ru.ystu.filter.JwtFilter;
 import ru.ystu.repository.UserRepository;
 import ru.ystu.repository.UserRepositoryImpl;
 import ru.ystu.repository.EmployeeRepository;
@@ -43,7 +45,19 @@ public class Main {
 
         Context ctx = tomcat.addContext("", new File(".").getAbsolutePath());
 
-        ru.ystu.filter.JwtFilter jwtFilter = new ru.ystu.filter.JwtFilter();
+        CorsFilter corsFilter = new CorsFilter();
+
+        FilterDef corsDef = new FilterDef();
+        corsDef.setFilterName("CorsFilter");
+        corsDef.setFilter(corsFilter);
+        ctx.addFilterDef(corsDef);
+
+        FilterMap corsMap = new FilterMap();
+        corsMap.setFilterName("CorsFilter");
+        corsMap.addURLPattern("/api/*");
+        ctx.addFilterMap(corsMap);
+
+        JwtFilter jwtFilter = new JwtFilter();
 
         FilterDef filterDef = new FilterDef();
         filterDef.setFilterName("JwtFilter");
@@ -63,9 +77,9 @@ public class Main {
         ctx.addFilterDef(adminFilterDef);
 
         FilterMap admFilterMap = new FilterMap();
-        filterMap.setFilterName("AdminFilter");
-        filterMap.addURLPattern("/api/users/*");
-        ctx.addFilterMap(filterMap);
+        admFilterMap.setFilterName("AdminFilter");
+        admFilterMap.addURLPattern("/api/users/*");
+        ctx.addFilterMap(admFilterMap);
 
         AuthServlet authServlet = new AuthServlet(userRepository);
         Tomcat.addServlet(ctx, "AuthServlet", authServlet);
