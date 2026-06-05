@@ -8,6 +8,8 @@ import ru.ystu.controller.AuthServlet;
 import ru.ystu.controller.EmployeeServlet;
 import ru.ystu.repository.UserRepository;
 import ru.ystu.repository.UserRepositoryImpl;
+import ru.ystu.repository.EmployeeRepository;
+import ru.ystu.repository.EmployeeRepositoryImpl;
 import ru.ystu.util.DatabaseSeeder;
 import org.apache.tomcat.util.descriptor.web.FilterDef;
 import org.apache.tomcat.util.descriptor.web.FilterMap;
@@ -21,6 +23,7 @@ public class Main {
         log.info("Starting Embedded Tomcat Server...");
 
         UserRepository userRepository = new UserRepositoryImpl();
+        EmployeeRepository employeeRepository = new EmployeeRepositoryImpl();
 
         try {
             DatabaseSeeder.seedAdmin(userRepository);
@@ -54,7 +57,7 @@ public class Main {
         Tomcat.addServlet(ctx, "AuthServlet", authServlet);
         ctx.addServletMappingDecoded("/api/auth/login", "AuthServlet");
 
-        EmployeeServlet employeeServlet = new EmployeeServlet(); // Позже передадим сюда репозиторий
+        EmployeeServlet employeeServlet = new EmployeeServlet(employeeRepository); // Позже передадим сюда репозиторий
         Tomcat.addServlet(ctx, "EmployeeServlet", employeeServlet);
         ctx.addServletMappingDecoded("/api/employees/*", "EmployeeServlet");
 
