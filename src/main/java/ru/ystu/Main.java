@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import ru.ystu.controller.AuthServlet;
 import ru.ystu.controller.EmployeeServlet;
 import ru.ystu.controller.UserServlet;
+import ru.ystu.filter.AdminFilter;
 import ru.ystu.repository.UserRepository;
 import ru.ystu.repository.UserRepositoryImpl;
 import ru.ystu.repository.EmployeeRepository;
@@ -27,7 +28,7 @@ public class Main {
         EmployeeRepository employeeRepository = new EmployeeRepositoryImpl();
 
         try {
-            DatabaseSeeder.seedAdmin(userRepository);
+            DatabaseSeeder.seedData(userRepository);
         } catch (Exception e) {
             log.error("Failed to seed database! Server will continue to start, but auth might fail.", e);
         }
@@ -52,6 +53,18 @@ public class Main {
         FilterMap filterMap = new FilterMap();
         filterMap.setFilterName("JwtFilter");
         filterMap.addURLPattern("/api/employees/*");
+        ctx.addFilterMap(filterMap);
+
+        AdminFilter adminFilter = new AdminFilter();
+
+        FilterDef adminFilterDef = new FilterDef();
+        adminFilterDef.setFilterName("AdminFilter");
+        adminFilterDef.setFilter(adminFilter);
+        ctx.addFilterDef(adminFilterDef);
+
+        FilterMap admFilterMap = new FilterMap();
+        filterMap.setFilterName("AdminFilter");
+        filterMap.addURLPattern("/api/users/*");
         ctx.addFilterMap(filterMap);
 
         AuthServlet authServlet = new AuthServlet(userRepository);

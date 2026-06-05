@@ -9,25 +9,29 @@ import ru.ystu.repository.UserRepository;
 public class DatabaseSeeder {
     private static final Logger log = LogManager.getLogger(DatabaseSeeder.class);
 
-    public static void seedAdmin(UserRepository userRepository) {
+    public static void seedData(UserRepository userRepository) {
         String adminUsername = "admin";
-
         if (userRepository.findByUsername(adminUsername).isEmpty()) {
-            log.info("Admin user not found. Starting automatic database seeding...");
-
+            log.info("Admin user not found. Seeding default admin...");
             User defaultAdmin = new User();
             defaultAdmin.setUsername(adminUsername);
-
-            String hashedPassword = BCrypt.hashpw("admin123", BCrypt.gensalt());
-            defaultAdmin.setPasswordHash(hashedPassword);
-
+            defaultAdmin.setPasswordHash(BCrypt.hashpw("admin123", BCrypt.gensalt()));
             defaultAdmin.setRole("ADMIN");
-
             userRepository.save(defaultAdmin);
-
-            log.info("Database successfully seeded! Default admin created (username: 'admin', password: 'admin123').");
-        } else {
-            log.info("Database verification completed: Admin user already exists.");
+            log.info("Default admin created (username: 'admin', password: 'admin123').");
         }
+
+        String employeeUsername = "worker1";
+        if (userRepository.findByUsername(employeeUsername).isEmpty()) {
+            log.info("Employee user not found. Seeding default employee...");
+            User defaultEmployee = new User();
+            defaultEmployee.setUsername(employeeUsername);
+            defaultEmployee.setPasswordHash(BCrypt.hashpw("worker123", BCrypt.gensalt()));
+            defaultEmployee.setRole("EMPLOYEE");
+            userRepository.save(defaultEmployee);
+            log.info("Default employee created (username: 'worker1', password: 'worker123').");
+        }
+
+        log.info("Database verification completed successfully.");
     }
 }
