@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.ystu.controller.AuthServlet;
 import ru.ystu.controller.EmployeeServlet;
+import ru.ystu.controller.UserServlet;
 import ru.ystu.repository.UserRepository;
 import ru.ystu.repository.UserRepositoryImpl;
 import ru.ystu.repository.EmployeeRepository;
@@ -60,6 +61,10 @@ public class Main {
         EmployeeServlet employeeServlet = new EmployeeServlet(employeeRepository); // Позже передадим сюда репозиторий
         Tomcat.addServlet(ctx, "EmployeeServlet", employeeServlet);
         ctx.addServletMappingDecoded("/api/employees/*", "EmployeeServlet");
+
+        UserServlet userServlet = new UserServlet(userRepository);
+        Tomcat.addServlet(ctx, "UserServlet", userServlet);
+        ctx.addServletMappingDecoded("/api/users/*", "UserServlet");
 
         tomcat.start();
         log.info("Tomcat started successfully on port {}!", webPort);
