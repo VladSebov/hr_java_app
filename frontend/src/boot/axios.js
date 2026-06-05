@@ -21,9 +21,9 @@ export default boot(({ app }) => {
   api.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response && error.response.status === 401) {
-        localStorage.removeItem('jwt_token')
-        window.location.href = '#/login'
+      if (error.response?.status === 401 && !error.config.url.includes('/auth/login')) {
+         localStorage.removeItem('jwt_token');
+         window.location.href = '#/login';
       }
       return Promise.reject(error)
     }
@@ -31,5 +31,12 @@ export default boot(({ app }) => {
 
   app.config.globalProperties.$api = api
 })
+
+export function logout() {
+  localStorage.removeItem('jwt_token')
+  localStorage.removeItem('user_role')
+  window.location.href = '#/login'
+  window.location.reload()
+}
 
 export { api }

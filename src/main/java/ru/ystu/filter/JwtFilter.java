@@ -15,6 +15,12 @@ public class JwtFilter extends HttpFilter {
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws IOException, ServletException {
 
+        String path = req.getRequestURI();
+        if (path.endsWith("/api/auth/login")) {
+            chain.doFilter(req, res);
+            return;
+        }
+
         String auth = req.getHeader("Authorization");
 
         if (auth == null || !auth.startsWith("Bearer ")) {

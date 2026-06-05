@@ -35,9 +35,14 @@ export default defineRouter((/* { store, ssrContext } */) => {
 
   Router.beforeEach((to) => {
     const isAuthenticated = !!localStorage.getItem('jwt_token')
+    const userRole = localStorage.getItem('user_role')
 
     if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
       return '/login'
+    }
+
+    if (to.path === '/users' && userRole !== 'ADMIN') {
+      return '/employees'
     }
 
     if (to.path === '/login' && isAuthenticated) {

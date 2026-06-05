@@ -69,10 +69,20 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
+        User existingUser = userRepository.findById(id).orElse(null); // Вам нужно добавить метод findById в интерфейс
+        if (existingUser == null) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            resp.getWriter().write("{\"error\": \"User not found\"}");
+            return;
+        }
+
         User updatedData = objectMapper.readValue(req.getInputStream(), User.class);
+
         if (updatedData.getPasswordHash() != null && !updatedData.getPasswordHash().isBlank()) {
             String hashedPassword = BCrypt.hashpw(updatedData.getPasswordHash(), BCrypt.gensalt());
             updatedData.setPasswordHash(hashedPassword);
+        } else {
+            updatedData.setPasswordHash(existingUser.getPasswordHash());
         }
 
         userRepository.update(id, updatedData);

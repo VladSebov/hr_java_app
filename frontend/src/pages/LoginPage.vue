@@ -38,12 +38,14 @@ const form = ref({ username: '', password: '' })
 
 const onLogin = async () => {
   try {
+
     const response = await api.post('/auth/login', {
       username: form.value.username,
       password: form.value.password
     })
 
     localStorage.setItem('jwt_token', response.data.token)
+    localStorage.setItem('user_role', response.data.role)
 
     $q.notify({ color: 'positive', message: 'Успешный вход!', icon: 'check' })
     router.push('/employees')

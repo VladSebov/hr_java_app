@@ -66,7 +66,7 @@ public class Main {
 
         FilterMap filterMap = new FilterMap();
         filterMap.setFilterName("JwtFilter");
-        filterMap.addURLPattern("/api/employees/*");
+        filterMap.addURLPattern("/api/*");
         ctx.addFilterMap(filterMap);
 
         AdminFilter adminFilter = new AdminFilter();

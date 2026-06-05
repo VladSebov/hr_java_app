@@ -32,6 +32,23 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Optional<User> findById(Long id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return Optional.of(UserRowMapper.mapRow(rs));
+            }
+        } catch (SQLException e) {
+            log.error("Error finding user by ID: {}", id, e);
+            throw new RuntimeException("Database error", e);
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public User save(User user) {
         String sql = "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?) RETURNING id, created_at";
 
