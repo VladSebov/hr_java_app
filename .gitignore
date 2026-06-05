@@ -40,3 +40,4 @@ build/
 .DS_Store
 
 .env
+tomcat.8080
