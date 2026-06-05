@@ -1,5 +1,6 @@
 package ru.ystu.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
@@ -18,5 +19,13 @@ public class JwtUtil {
                 .expiration(new Date(System.currentTimeMillis() + 3600000))
                 .signWith(KEY)
                 .compact();
+    }
+
+    public static Claims validateToken(String token) {
+        return Jwts.parser()
+                .verifyWith(KEY)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
